@@ -34,36 +34,9 @@
     </header>
 
     <main>
-        <div class="search-container">
-            <h1>
-                <div style="font-size: 70px;">
-
-                    <p style="margin: 0;">
-                        <span style="color:#ff2e63; letter-spacing: -15px;">G</span>
-                        <span style="color:#ffb800; letter-spacing: -15px;">o</span>
-                        <span style="color:#3fc5f0; letter-spacing: -15px;">o</span>
-                        <span style="color:#48c774; letter-spacing: -15px;">l</span>
-                        <span style="color:#374c80; letter-spacing: -15px;">o</span>
-                        <span style="color:#9b59b6; letter-spacing: -15px;">g</span>
-                        <span style="color:#3fc5f0; letter-spacing: -15px;">o</span>
-                        <span style="color:#ff2e63; letter-spacing: -15px;">l</span>
-                        <span style="color:#ffb800; letter-spacing: -15px;">o</span>
-                        <span style="color:#3fc5f0; letter-spacing: -15px;">o</span>
-                    </p>
-                </div>
-
-
-                <span style="font-size: large;">The Best AI Search Engine!</span>
-            </h1>
-            <form>
-                <input type="text" placeholder="Search">
-                <button type="submit">Go</button>
-            </form>
-            <div class="lucky">
-                <br />
-                <span style="font-size: small;">Created by Ahmed Allam, 2023</span>
-            </div>
-        </div>
+        <ul id="search-results">
+            {{results}}
+        </ul>
     </main>
 
     <footer>

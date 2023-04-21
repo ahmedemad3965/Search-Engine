@@ -8,7 +8,6 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
-
 using namespace std;
 
 BrowserMode::BrowserMode(Engine *engine)
@@ -18,7 +17,6 @@ BrowserMode::BrowserMode(Engine *engine)
 
 BrowserMode::~BrowserMode()
 {
-
 }
 
 void BrowserMode::run()
@@ -108,6 +106,15 @@ void BrowserMode::listen_for_requests(int server_fd)
 
         if (method == "GET")
         {
+            if (path.find("search") != string::npos)
+            {
+                // /search?q=
+                string query = path.substr(path.find("q=") + 2);
+
+                // string results = engine->search(query);
+                vector<string> results = {"Ahmed", "Eyad", "Amr"};
+                serve_results(client_fd, results);
+            }
             if (path == "/")
             {
                 serve_file(client_fd, "public/index.html");
@@ -117,11 +124,6 @@ void BrowserMode::listen_for_requests(int server_fd)
                 serve_file(client_fd, "public" + path);
             }
         }
-        else if (method == "POST")
-        {
-            string response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 12\r\n\r\nHello World!";
-            write(client_fd, response.c_str(), response.size());
-        }
         else
         {
             string response = "HTTP/1.1 405 Method Not Allowed\r\nContent-Type: text/plain\r\nContent-Length: 12\r\n\r\nHello World!";
@@ -130,6 +132,42 @@ void BrowserMode::listen_for_requests(int server_fd)
 
         close(client_fd);
     }
+}
+
+void BrowserMode::serve_results(int client_fd, vector<string> results)
+{
+    // read the results template file
+    string path = "public/results.html";
+    ifstream file(path, ios::binary | ios::ate);
+    if (!file.is_open())
+    {
+        string response = "HTTP/1.1 404 Not Found\r\nContent-Type: text/plain\r\nContent-Length: 0\r\n\r\n";
+        write(client_fd, response.c_str(), response.size());
+        return;
+    }
+    streamsize size = file.tellg();
+    file.seekg(0, ios::beg);
+    string content(size, ' ');
+    file.read(&content[0], size);
+
+    // replacing the {{results}} placeholder with the actual results
+    string results_str;
+    for (const auto &result : results)
+    {
+        results_str += "<li>" + result + "</li>\n";
+    }
+    size_t pos = content.find("{{results}}");
+    if (pos != string::npos)
+    {
+        content.replace(pos, string("{{results}}").size(), results_str);
+    }
+
+    // send the modified file to the client
+    string response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: " + to_string(content.size()) + "\r\n\r\n";
+    write(client_fd, response.c_str(), response.size());
+    write(client_fd, content.c_str(), content.size());
+
+    file.close();
 }
 
 void BrowserMode::serve_file(int client_fd, const string &path)
