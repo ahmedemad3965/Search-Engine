@@ -101,7 +101,7 @@ void BrowserMode::listen_for_requests(int server_fd)
         size_t content_start = request_str.find("\r\n\r\n") + 4;
         string content = request_str.substr(content_start);
 
-        // cout << "Received " << method << " request for " << path << " with content:" << endl;
+        // cout << "aa Received " << method << " request for " << path << " with content:" << endl;
         // cout << content << endl;
 
         if (method == "GET")
@@ -111,8 +111,7 @@ void BrowserMode::listen_for_requests(int server_fd)
                 // /search?q=
                 string query = path.substr(path.find("q=") + 2);
 
-                // string results = engine->search(query);
-                vector<string> results = {"Ahmed", "Eyad", "Amr"};
+                vector<Result> results = engine->search(query);
                 serve_results(client_fd, results);
             }
             if (path == "/")
@@ -134,9 +133,31 @@ void BrowserMode::listen_for_requests(int server_fd)
     }
 }
 
-void BrowserMode::serve_results(int client_fd, vector<string> results)
+string getKeywords(vector<string> keywords)
 {
-    // read the results template file
+    string keywords_str = "";
+    for (int i = 0; i < keywords.size(); i++)
+    {
+        keywords_str += keywords[i];
+        if (i != keywords.size() - 1)
+        {
+            keywords_str += ", ";
+        }
+    }
+    return keywords_str;
+}
+
+string make_url_external(string url)
+{
+    if (url.find("http://") == string::npos)
+    {
+        return "http://" + url;
+    }
+    return url;
+}
+
+void BrowserMode::serve_results(int client_fd, vector<Result> results)
+{
     string path = "public/results.html";
     ifstream file(path, ios::binary | ios::ate);
     if (!file.is_open())
@@ -150,12 +171,13 @@ void BrowserMode::serve_results(int client_fd, vector<string> results)
     string content(size, ' ');
     file.read(&content[0], size);
 
-    // replacing the {{results}} placeholder with the actual results
     string results_str;
-    for (const auto &result : results)
+
+    for (int i = 0; i < results.size(); i++)
     {
-        results_str += "<li>" + result + "</li>\n";
+        results_str += "<div class=\"result\"><a href=\"" + make_url_external(results[i].get_url()) + "\">" + results[i].get_url() + "</a><br><span class=\"keywords\">" + getKeywords(results[i].get_keywords()) + "</span></div>";
     }
+
     size_t pos = content.find("{{results}}");
     if (pos != string::npos)
     {

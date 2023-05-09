@@ -29,6 +29,15 @@ void build_webgraph(string filename)
             string url1, url2;
             getline(ss, url1, ',');
             getline(ss, url2, ',');
+
+
+            // strip and trim url
+            url1.erase(0, url1.find_first_not_of(' '));
+            url1.erase(url1.find_last_not_of(' ') + 1);
+
+            url2.erase(0, url2.find_first_not_of(' '));
+            url2.erase(url2.find_last_not_of(' ') + 1);
+
             (*graph)[url1].push_back(url2);
         }
         webgraph_file.close();
@@ -54,6 +63,13 @@ void add_keywords(string filename)
             string keyword;
             while (getline(ss, keyword, ','))
             {
+                // strip and trim keyword
+                keyword.erase(0, keyword.find_first_not_of(' '));
+                keyword.erase(keyword.find_last_not_of(' ') + 1);
+
+                url.erase(0, url.find_first_not_of(' '));
+                url.erase(url.find_last_not_of(' ') + 1);
+
                 (*keywords)[keyword].push_back(url);
             }
         }
@@ -62,6 +78,13 @@ void add_keywords(string filename)
     else
     {
         cerr << "Unable to open file" << endl;
+    }
+    
+
+
+    cout << "printing kewords" << endl;
+    for (const auto &pair : *keywords) {
+        cout << pair.first << " . " << pair.second.size() << endl;
     }
 }
 
@@ -79,6 +102,11 @@ void add_impressions_count(string filename)
             getline(ss, url, ',');
             int count;
             ss >> count;
+
+            // strip and trim url
+            url.erase(0, url.find_first_not_of(' '));
+            url.erase(url.find_last_not_of(' ') + 1);
+
             (*impressions)[url] = count;
         }
         impressions_file.close();
@@ -103,6 +131,11 @@ void add_clicks_count(string filename)
             getline(ss, url, ',');
             int count;
             ss >> count;
+
+            // strip and trim url
+            url.erase(0, url.find_first_not_of(' '));
+            url.erase(url.find_last_not_of(' ') + 1);
+
             (*clicks)[url] = count;
         }
         clicks_file.close();

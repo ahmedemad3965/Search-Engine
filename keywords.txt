@@ -1,0 +1,43 @@
+www.google.com, search engine, online advertising, cloud computing
+www.youtube.com, video sharing, entertainment, music
+www.facebook.com, social networking, advertising, virtual reality
+www.instagram.com, photo sharing, social networking, influencers
+www.twitter.com, microblogging, social networking, news
+www.linkedin.com, professional networking, job search, HR solutions
+www.github.com, software development, open source, version control
+www.stackoverflow.com, Q&A community, programming, developers
+www.medium.com, publishing platform, blogging, writers
+www.quora.com, Q&A community, knowledge sharing, experts
+www.reddit.com, social news aggregation, discussion forums, memes
+www.wikipedia.org, online encyclopedia, knowledge sharing, open content
+www.nytimes.com, newspaper, news, journalism
+www.wsj.com, newspaper, news, finance
+www.ft.com, financial news, business news, analysis
+www.bloomberg.com, financial news, business news, markets
+www.cnbc.com, business news, financial news, stock market
+www.forbes.com, business news, wealth, entrepreneurship
+www.businessinsider.com, business news, tech news, lifestyle
+www.theverge.com, technology news, product reviews, science
+www.engadget.com, technology news, gadgets, consumer electronics
+www.cnet.com, technology news, product reviews, consumer electronics
+www.theatlantic.com, magazine, news, culture
+www.economist.com, magazine, news, analysis
+www.newyorker.com, magazine, news, culture
+www.thehill.com, political news, policy, Congress
+www.politico.com, political news, policy, elections
+www.bbc.com, news, world news, UK news
+www.cnn.com, news, US news, world news
+www.foxnews.com, news, US news, politics
+www.npr.org, news, public radio, podcasts
+www.nbcnews.com, news, US news, world news
+www.usatoday.com, news, US news, sports
+www.reuters.com, news agency, news, business
+www.apnews.com, news agency, news, world news
+www.aljazeera.com, news, world news, Middle East
+www.theguardian.com, newspaper, news, UK news
+www.dw.com, news, world news, Germany
+www.france24.com, news, world news, France
+www.spiegel.de, news, world news, Germany
+www.bbc.co.uk, news, world news, UK news
+www.thetimes.co.uk, newspaper, news, UK news
+www.theguardian.co.uk, newspaper, news, UK news

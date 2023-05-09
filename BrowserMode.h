@@ -15,7 +15,7 @@ public:
     void run();
     string get_content_type(const string& path);
     void serve_file(int client_fd, const string& path);
-    void serve_results(int client_fd, vector<string> results);
+    void serve_results(int client_fd, vector<Result> results);
     int create_server_socket(int port);
     void listen_for_requests(int server_fd);
     void open_browser(const string& url);
