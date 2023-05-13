@@ -175,7 +175,11 @@ void BrowserMode::serve_results(int client_fd, vector<Result> results)
 
     for (int i = 0; i < results.size(); i++)
     {
-        results_str += "<div class=\"result\"><a href=\"" + make_url_external(results[i].get_url()) + "\">" + results[i].get_url() + "</a><br><span class=\"keywords\">" + getKeywords(results[i].get_keywords()) + "</span></div>";
+        results_str += "<li class=\"result\"><a href=\"" + make_url_external(results[i].get_url()) + "\">" + results[i].get_url() + "</a><br><span class=\"keywords\">" + getKeywords(results[i].get_keywords()) + "</span></li>";
+    }
+
+    if(results.size() == 0){
+        results_str += "<div class=\"no-result\">No results found</div>";
     }
 
     size_t pos = content.find("{{results}}");

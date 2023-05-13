@@ -149,7 +149,6 @@ vector<string> Engine::getKeyWordsinURL(string url)
 
 vector<Result> Engine::search(string query)
 {
-    cout << "Searching for: " << query << endl;
     vector<Result> results;
     vector<string> words = splitQuery(query, ' ');
 
@@ -227,7 +226,6 @@ vector<Result> Engine::search(string query)
                 continue;
             
             vector<string> urlsForKeyword = (*this->keywords)[words[i]];
-            cout << "Keyword: " << words[i] << "  .   " << urlsForKeyword.size() << endl;
             for (const auto &url : urlsForKeyword)
             {
                 Result result(url, calculatePageRank(url), calculateCTR(url), getKeyWordsinURL(url));
@@ -237,12 +235,6 @@ vector<Result> Engine::search(string query)
     }
 
     sort(results.begin(), results.end());
-
-    cout << "Results:" << endl;
-    for (auto &result : results)
-    {
-        cout << result.get_url() << endl;
-    }
 
     return results;
 }

@@ -30,7 +30,6 @@ void build_webgraph(string filename)
             getline(ss, url1, ',');
             getline(ss, url2, ',');
 
-
             // strip and trim url
             url1.erase(0, url1.find_first_not_of(' '));
             url1.erase(url1.find_last_not_of(' ') + 1);
@@ -78,13 +77,6 @@ void add_keywords(string filename)
     else
     {
         cerr << "Unable to open file" << endl;
-    }
-    
-
-
-    cout << "printing kewords" << endl;
-    for (const auto &pair : *keywords) {
-        cout << pair.first << " . " << pair.second.size() << endl;
     }
 }
 
@@ -188,41 +180,66 @@ int main()
          << endl
          << endl;
 
-    cout << "Do you want to start searching in Browser mode, or in Command Line mode?" << endl
+    while (true)
+    {
+        cout << "=============================================================" << endl
+             << endl
+             << endl;
+        cout << "Do you want to start searching in Browser mode, or in Command Line mode?" << endl
+             << endl;
+        cout << "Enter 1 for Browser mode (: , 2 for Command Line mode, or 3 for Exit :(" << endl
+             << endl;
+
+        int mode;
+        cin >> mode;
+
+        if (mode == 1)
+        {
+            cout << "=============================================================" << endl
+                 << endl
+                 << endl;
+            cout << "Welcome to Browser Mode!" << endl
+                 << endl
+                 << endl;
+
+            BrowserMode browser_mode(engine);
+            browser_mode.run();
+        }
+        else if (mode == 2)
+        {
+            cout << "=============================================================" << endl
+                 << endl
+                 << endl;
+            cout << "Welcome to Console Mode!" << endl
+                 << endl
+                 << endl;
+
+            ConsoleMode console_mode(engine);
+            console_mode.run();
+        }
+        else if (mode == 3)
+        {
+            break;
+        }
+        else
+        {
+            cerr << "Invalid mode, please run again and enter 1 or 2" << endl;
+        }
+    }
+
+    delete engine;
+    delete graph;
+    delete keywords;
+    delete impressions;
+    delete clicks;
+
+    cout << endl
+         << endl
+         << "=============================================================" << endl;
+    cout << "Thank you for using Goologolo, the best AI Search Engine in the world! Bye!" << endl;
+    cout << "=============================================================" << endl
+         << endl
          << endl;
-    cout << "Enter 1 for Browser mode, or 2 for Command Line mode" << endl << endl;
-
-    int mode;
-    cin >> mode;
-
-    if (mode == 1)
-    {
-        cout << "=============================================================" << endl
-             << endl
-             << endl;
-        cout << "Welcome to Browser Mode!" << endl
-             << endl
-             << endl;
-
-        BrowserMode browser_mode(engine);
-        browser_mode.run();
-    }
-    else if (mode == 2)
-    {
-        cout << "=============================================================" << endl
-             << endl
-             << endl;
-        cout << "Welcome to Console Mode!" << endl
-             << endl
-             << endl;
-
-        // ConsoleMode console_mode(engine);
-        // console_mode.run();
-    }
-    else
-    {
-        cerr << "Invalid mode, please run again and enter 1 or 2" << endl;
-    }
 
     return 0;
 }
