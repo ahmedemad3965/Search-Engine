@@ -22,10 +22,10 @@ Engine::~Engine()
     delete this->clicks;
 }
 
-std::string url_decode(const std::string &str)
+string url_decode(const string &str)
 {
-    std::ostringstream oss;
-    for (std::string::size_type i = 0; i < str.length(); ++i)
+    ostringstream oss;
+    for (string::size_type i = 0; i < str.length(); ++i)
     {
         if (str[i] == '+')
         {
@@ -34,7 +34,7 @@ std::string url_decode(const std::string &str)
         else if (str[i] == '%' && i + 2 < str.length() &&
                  isxdigit(str[i + 1]) && isxdigit(str[i + 2]))
         {
-            char c = std::stoi(str.substr(i + 1, 2), nullptr, 16);
+            char c = stoi(str.substr(i + 1, 2), nullptr, 16);
             oss << c;
             i += 2;
         }
@@ -62,19 +62,6 @@ vector<string> splitQuery(const string &query, char delimiter)
     }
 
     return words;
-}
-
-bool containsKeywords(const string &url, const vector<string> &keywords)
-{
-    for (const auto &keyword : keywords)
-    {
-        if (url.find(keyword) == string::npos)
-        {
-            return false;
-        }
-    }
-
-    return true;
 }
 
 float Engine::calculatePageRank(string url)
@@ -157,10 +144,6 @@ vector<Result> Engine::search(string query)
         if (words[i] != "AND" && words[i] != "OR")
             transform(words[i].begin(), words[i].end(), words[i].begin(), ::tolower);
 
-        words[i].erase(remove_if(words[i].begin(), words[i].end(), [](char c)
-                                 { return !isalnum(c); }),
-                       words[i].end());
-
         if (words[i] == "AND")
         {
             if (i > 0 && i < words.size() - 1)
@@ -172,7 +155,11 @@ vector<Result> Engine::search(string query)
                     if (find(urlsForKeyword2.begin(), urlsForKeyword2.end(), url) != urlsForKeyword2.end())
                     {
                         Result result(url, calculatePageRank(url), calculateCTR(url), getKeyWordsinURL(url));
-                        results.push_back(result);
+                        if (find(results.begin(), results.end(), result) == results.end())
+                        {
+                            increment_impressions(url);
+                            results.push_back(result);
+                        }
                     }
                 }
                 ++i;
@@ -187,36 +174,73 @@ vector<Result> Engine::search(string query)
                 for (const auto &url : urlsForKeyword1)
                 {
                     Result result(url, calculatePageRank(url), calculateCTR(url), getKeyWordsinURL(url));
-                    results.push_back(result);
+                    if (find(results.begin(), results.end(), result) == results.end())
+                    {
+                        increment_impressions(url);
+                        results.push_back(result);
+                    }
                 }
                 for (const auto &url : urlsForKeyword2)
                 {
                     Result result(url, calculatePageRank(url), calculateCTR(url), getKeyWordsinURL(url));
-                    results.push_back(result);
+                    if (find(results.begin(), results.end(), result) == results.end())
+                    {
+                        increment_impressions(url);
+                        results.push_back(result);
+                    }
                 }
                 ++i;
             }
         }
-        else if (words[i][0] == '"' && words[i][words[i].size() - 1] == '"')
+        else if (words[i][0] == '"')
         {
-            string phrase = words[i].substr(1, words[i].size() - 2);
-
-            vector<string> phraseWords = splitQuery(phrase, ' ');
-            for (const auto &pair : *this->keywords)
+            // check where the closing quote is
+            int j = i;
+            while (j < words.size() && words[j][words[j].size() - 1] != '"')
             {
-                if (pair.second.size() > 0)
+                ++j;
+            }
+            if (j < words.size())
+            {
+                string phrase = words[i];
+                for (int k = i + 1; k <= j; ++k)
                 {
-                    vector<string> urlsForKeyword = pair.second;
+                    phrase += " " + words[k];
+                }
+                // remove the quotes
+                phrase = phrase.substr(1, phrase.size() - 2);
 
-                    for (const auto &url : urlsForKeyword)
+                vector<string> phraseWords = splitQuery(phrase, ' ');
+                for (const auto &pair : *this->keywords)
+                {
+                    if (pair.second.size() > 0)
                     {
-                        if (containsKeywords(url, phraseWords))
+                        vector<string> urlsForKeyword = pair.second;
+
+                        for (const auto &url : urlsForKeyword)
                         {
-                            Result result(url, calculatePageRank(url), calculateCTR(url), getKeyWordsinURL(url));
-                            results.push_back(result);
+                            bool found = true;
+                            for (const auto &phraseWord : phraseWords)
+                            {
+                                if (find((*this->keywords)[phraseWord].begin(), (*this->keywords)[phraseWord].end(), url) == (*this->keywords)[phraseWord].end())
+                                {
+                                    found = false;
+                                    break;
+                                }
+                            }
+                            if (found)
+                            {
+                                Result result(url, calculatePageRank(url), calculateCTR(url), getKeyWordsinURL(url));
+                                if (find(results.begin(), results.end(), result) == results.end())
+                                {
+                                    increment_impressions(url);
+                                    results.push_back(result);
+                                }
+                            }
                         }
                     }
                 }
+                i = j;
             }
         }
         else
@@ -224,12 +248,17 @@ vector<Result> Engine::search(string query)
             // if there is AND or OR  after the word, skip it
             if (i < words.size() - 1 && (words[i + 1] == "AND" || words[i + 1] == "OR"))
                 continue;
-            
+
             vector<string> urlsForKeyword = (*this->keywords)[words[i]];
             for (const auto &url : urlsForKeyword)
             {
+
                 Result result(url, calculatePageRank(url), calculateCTR(url), getKeyWordsinURL(url));
-                results.push_back(result);
+                if (find(results.begin(), results.end(), result) == results.end())
+                {
+                    increment_impressions(url);
+                    results.push_back(result);
+                }
             }
         }
     }

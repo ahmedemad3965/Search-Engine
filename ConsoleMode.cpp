@@ -70,6 +70,7 @@ void ConsoleMode::run()
                     break;
                 }
                 open_browser(results[webpageNumber - 1].get_url());
+                this->engine->increment_clicks(results[webpageNumber - 1].get_url());
                 just_opened = true;
                 break;
             }

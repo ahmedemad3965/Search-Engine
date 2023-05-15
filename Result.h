@@ -34,6 +34,11 @@ public:
     {
         return (this->ctr * this->pageRank) < (other.ctr * other.pageRank);
     }
+
+    bool operator==(const Result &other) const
+    {
+        return this->url == other.url;
+    }
 };
 
 #endif
